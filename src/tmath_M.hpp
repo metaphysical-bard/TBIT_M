@@ -1,7 +1,8 @@
 /*
 
 tmath_M.hpp
-	2025-06-11 ver.2
+	2025-06-11 ver.2 add new namespace
+	2025-06-11 ver.3 improve div
 
 */
 
@@ -55,20 +56,21 @@ namespace tmath_M {
 	}
 
 	bits DIV(bits& a, bits& b) {
-		assert(a.size() == b.size() && a.size() >= 2);
+		assert(a.size() == b.size() && a.size() >= 2 && b.value() != 0);
 		bits d(a.size());
 		bits ra = d.data() + a.data() + d.data();
 		bits rb = d.data() + b.data() + d.data();
 		d = a.size() * 3;
 		d[a.size() * 2 + 1] = '1';
-		auto [r, c] = SUB(d, rb);
 		while (rb.value() != (std::pow(2, a.size() * 2) - 1)) {
+			auto [r, c] = SUB(d, rb);
 			ra = MUL(ra, r).data().substr(a.size(), a.size() * 3);
 			rb = MUL(rb, r).data().substr(b.size(), b.size() * 3);
-			auto [ri, ci] = SUB(d, rb);
-			r = ri;
 		}
-		ra = ra.data().substr(0, a.size());
+		d = a.size() * 3;
+		d[0] = '1';
+		auto [s, c] = ADD(ra, d);
+		ra = s.data().substr(0, a.size());
 		return ra;
 	}
 
@@ -119,21 +121,30 @@ namespace tmath_M {
 	}
 
 	tbits DIV(tbits& a, tbits& b) {
-		assert(a.size() == b.size() && a.size() >= 2);
+		assert(a.size() == b.size() && a.size() >= 2 && b.value() != 0);
+		if (b.value() == 1) return a;
 		tbits d(a.size());
 		tbits ra = d.data() + a.data() + d.data();
 		tbits rb = d.data() + b.data() + d.data();
 		d = a.size() * 3;
 		d[a.size() * 2 + 1] = '1';
 		d[a.size() * 2 + 0] = 'T';
-		auto [r, c] = SUB(d, rb);
 		while (rb.value() != std::pow(3, a.size() * 2)) {
+			auto [r, c] = SUB(d, rb);
 			ra = MUL(ra, r).data().substr(a.size(), a.size() * 3);
 			rb = MUL(rb, r).data().substr(b.size(), b.size() * 3);
-			auto [ri, ci] = SUB(d, rb);
-			r = ri;
 		}
+		tbit cmp_a = '0';
+		for (int i = a.size(); i < a.size() * 2; i++) { cmp_a = (cmp_a + ra[i]) + (cmp_a.n10T() * ra[i]); }
 		ra = ra.data().substr(0, a.size());
+		tbit cmp_ra = '0';
+		for (int i = 0; i < a.size(); i++) { cmp_ra = (cmp_ra + ra[i]) + (cmp_ra.n10T() * ra[i]); }
+		if (cmp_a.data == 'T' && cmp_ra.data == '1') {
+			d = a.size();
+			d[0] = '1';
+			auto [s, c] = SUB(ra, d);
+			ra = s;
+		}
 		return ra;
 	}
 

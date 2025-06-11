@@ -1,8 +1,8 @@
 /*
 
 tbit_M.hpp
-	2025-06-09 ver.1
-	2025-06-11 ver.2
+	2025-06-09 ver.1 first commit
+	2025-06-11 ver.2 add new namespace
 
 */
 
