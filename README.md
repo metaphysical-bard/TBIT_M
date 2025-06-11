@@ -1,29 +1,52 @@
 # TBIT_M ver.3
-平衡3進法による論理回路をシミュレーションするためのライブラリです。比較のため、2進法による実装も含みます。
+平衡3進法による論理回路をシミュレーションするためのライブラリです。比較のため、2進法による実装も含みます。<br>
+- [依存関係](#依存関係)
+- [セットアップ](#セットアップ)
+- [Reference](#reference)
+   - [class bit](#class-bit)
+   - [class bits](#class-bits)
+   - [class tbit](#class-tbit)
+   - [class tbits](#class-tbits)
+   - [HA](#ha)
+   - [FA](#fa)
+   - [ADD](#add)
+   - [SUB](#sub)
+   - [MUL](#mul)
+   - [DIV](#div)
+- [使用例](#使用例)
+- [Version](#version)
+- [ライセンス](#ライセンス)
+- [連絡先](#連絡先)
+<br>
 
 ## 依存関係
-- C++ 20
+- C++ 20<br>
 
 ## セットアップ
 ビット演算は`tbit_M.hpp`で宣言されています。
 ```cpp
 #include "tbit_M.hpp"
 ```
+<br>
 四則演算を行うための関数は`tmath_M.hpp`に宣言されています。
 ```cpp
 #include "tmath_M.hpp"
 ```
 <br>
 ビット演算は正確に動作しますが、四則演算は近似値を求めている都合上誤差が生じる可能性があります。
+<br>
 
 ## Reference
 `tmath_M`という名前空間の中に、4つのクラスと6つの関数があります。
+<br>
 
 ### class bit
 1ビットの2進数を扱うクラスです。
 ```cpp
 tmath_M::bit a = '0';//'0' or '1'
 ```
+<br>
+
 `NOT`, `NAND`, `NOR`は以下のようにして求めれます。
 ```cpp
 //NOT
@@ -35,10 +58,13 @@ tmath_M::bit c = a & b;//'1' <- '0' & '1'
 //NOR
 tmath_M::bit d = a | b;//'0' <- '0' | '1'
 ```
+<br>
+
 `bit.data`から値を参照することができます。
 ```cpp
 std::cout << a.data;//'0'
 ```
+<br>
 
 ### class bits
 複数ビットの2進数を扱うクラスです。
@@ -47,13 +73,17 @@ tmath_M::bits a = 4;//"0000"
 tmath_M::bits b = "0100";
 tmath_M::bits c = { '0', '1', '0', '0' };
 ```
+<br>
 `bit`クラスと同様に`NOT`, `NAND`, `NOR`のビット演算を行うことができます。値を参照するには`bit.data()`又は`bit.value()`を使用します。`bit.size()`ではビットサイズを取得できます。
+<br>
 
 ### class tbit
 1ビットの平衡3進数を扱うクラスです。`1`, '0', 'T'のいずれかの状態を持ちます。
 ```cpp
 tmath_M::tbit a = '1';
 ```
+<br>
+
 5種類の`NOT`と4種類のビット演算を処理できます。
 ```cpp
 //NOT(type 10T)
@@ -71,6 +101,7 @@ s = a | b;//'0' <- '1' * 'T'
 //NANY
 s = a | b;//'0' <- '1' + 'T'
 ```
+<br>
 
 ### class tbits
 複数ビットの平衡3進法を扱うクラスです。
@@ -79,7 +110,9 @@ tmath_M::tbits a = 4;//"0000"
 tmath_M::tbits b = "010T";
 tmath_M::tbits c = { '0', '1', '0', 'T' };
 ```
+<br>
 `tbit`クラスと同様のビット演算を行えます。
+<br>
 
 ### HA
 半加算器として機能します。
@@ -87,6 +120,7 @@ tmath_M::tbits c = { '0', '1', '0', 'T' };
 auto [s, c] = tmath_M::HA(tmath_M::bit, tmath_M::bit)
 auto [s, c] = tmath_M::HA(tmath_M::tbit, tmath_M::tbit)
 ```
+<br>
 
 ### FA
 全加算器です。
@@ -94,6 +128,7 @@ auto [s, c] = tmath_M::HA(tmath_M::tbit, tmath_M::tbit)
 auto [s, c] = tmath_M::HA(tmath_M::bit, tmath_M::bit, tmath_M::bit)
 auto [s, c] = tmath_M::HA(tmath_M::tbit, tmath_M::tbit, tmath_M::tbit)
 ```
+<br>
 
 ### ADD
 加算を処理します。繰り上がり分`c`は`bit`クラスで表現されます。
@@ -101,6 +136,7 @@ auto [s, c] = tmath_M::HA(tmath_M::tbit, tmath_M::tbit, tmath_M::tbit)
 auto [s, c] = tmath_M::ADD(tmath_M::bits, tmath_M::bits)
 auto [s, c] = tmath_M::ADD(tmath_M::tbits, tmath_M::tbit)
 ```
+<br>
 
 ### SUB
 減算を処理します。2進数では負の数を表現できないため、出力は正確ではありません。
@@ -108,6 +144,7 @@ auto [s, c] = tmath_M::ADD(tmath_M::tbits, tmath_M::tbit)
 auto [s, c] = tmath_M::SUB(tmath_M::bits, tmath_M::bits)
 auto [s, c] = tmath_M::SUB(tmath_M::tbits, tmath_M::tbits)
 ```
+<br>
 
 ### MUL
 乗算を処理します。出力のビットサイズは入力のビットサイズの2倍です。
@@ -115,6 +152,7 @@ auto [s, c] = tmath_M::SUB(tmath_M::tbits, tmath_M::tbits)
 tmath_M::bits s = tmath_M::MUL(tmath_M::bits, tmath_M::bits)
 tmath_M::tbits s = tmath_M::MUL(tmath_M::tbits, tmath_M::tbits)
 ```
+<br>
 
 ### DIV
 除算を処理します。ゴールドシュミット法による近似計算であるため、誤差が生じる場合があります。5ビットまでのビットサイズでは誤差が生じないように調整しています。
@@ -122,9 +160,11 @@ tmath_M::tbits s = tmath_M::MUL(tmath_M::tbits, tmath_M::tbits)
 tmath_M::bits s = tmath_M::DIV(tmath_M::bits, tmath_M::bits)
 tmath_M::tbits s = tmath_M::DIV(tmath_M::tbits, tmath_M::tbits)
 ```
+<br>
 
 ## 使用例
 https://github.com/metaphysical-bard/TBIT_M/blob/main/src/example.cpp
+<br>
 
 ## Version
 | DATA | VERSION | INFO |
@@ -132,12 +172,15 @@ https://github.com/metaphysical-bard/TBIT_M/blob/main/src/example.cpp
 | 2025-06-09 | 1 | first commit |
 | 2025-06-11 | 2 | add new namespace |
 | 2025-06-11 | 3 | improve div<br>add test file |
+<br>
 
 ## ライセンス
 - `zlib License`です。
 - プログラムの利用、複製、書き換え、再配布を許可します。
 - 本プログラムにより生じた不利益に関して、本プログラムの製作者は責任を負いません。
+<br>
 
 ## 連絡先
 Ryoichi Tsukamoto<br>
 contact : r03e24@hachinohe.kosen-ac.jp
+<br>
