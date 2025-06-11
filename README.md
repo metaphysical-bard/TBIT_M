@@ -1,4 +1,4 @@
-# TBIT_M ver.1
+# TBIT_M ver.2
 Program for balanced ternary.
 
 example
